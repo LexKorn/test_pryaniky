@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {Modal, Button, Box, Typography, TextField} from '@mui/material';
 
 import { Context } from '../..';
+import { isValidISODate } from '../../utils/validISODate';
 
 interface CUDataProps {
     id: string;
@@ -48,12 +49,14 @@ const CUData: React.FC<CUDataProps> = ({id, companySigDate, companySignatureName
     const onClick = () => {
         if (!companySigDate.trim() || !companySignatureName.trim() || !documentName.trim() || !documentStatus.trim() || !documentType.trim() || !employeeNumber.trim() || !employeeSigDate.trim() || !employeeSignatureName.trim()) {
             return alert('Все поля обязательны для заполнения');
+        } else if (!isValidISODate(companySigDate) || !isValidISODate(employeeSigDate)) {
+            return alert ('Неверный формат даты');
         }
 
         if (btnName === 'Добавить') {
             handler(companySigDate, companySignatureName, documentName, documentStatus, documentType, employeeNumber, employeeSigDate, employeeSignatureName)
                 .then(() => handleClose())
-                .catch(err => console.log(err.response.data.message));
+                .catch(err => alert(`Что-то пошло не так. ${err}`));
         } else {
             // @ts-ignore 
             handler(id, companySigDate, companySignatureName, documentName, documentStatus, documentType, employeeNumber, employeeSigDate, employeeSignatureName)
@@ -61,7 +64,7 @@ const CUData: React.FC<CUDataProps> = ({id, companySigDate, companySignatureName
                     handleClose();
                     notes.setToggle(notes.toggle);
                 })
-                .catch(err => alert(err.response.data.message));
+                .catch(err => alert(`Что-то пошло не так. ${err}`));
         }
     };
 
@@ -82,48 +85,56 @@ const CUData: React.FC<CUDataProps> = ({id, companySigDate, companySignatureName
                         <TextField 
                             className="my-card__input"
                             placeholder="Company Sig Date..."
+                            label="Company Sig Date: YYYY-MM-DDTHH:MM:SS.zzzZ"
                             value={companySigDate}
                             onChange={e => setCompanySigDate(e.target.value)}
                         />
                         <TextField
                             className="my-card__input"
                             placeholder="Company Signature Name..."
+                            label="Company Signature Name"
                             value={companySignatureName}
                             onChange={e => setCompanySignatureName(e.target.value)}
                         />
                         <TextField 
                             className="my-card__input"
                             placeholder="Document Name..."
+                            label="Document Name"
                             value={documentName}
                             onChange={e => setDocumentName(e.target.value)}
                         />
                         <TextField
                             className="my-card__input"
                             placeholder="Document Status..."
+                            label="Document Status"
                             value={documentStatus}
                             onChange={e => setDocumentStatus(e.target.value)}
                         />
                         <TextField 
                             className="my-card__input"
                             placeholder="Document Type..."
+                            label="Document Type"
                             value={documentType}
                             onChange={e => setDocumentType(e.target.value)}
                         />
                         <TextField
                             className="my-card__input"
                             placeholder="Employee Number..."
+                            label="Employee Number"
                             value={employeeNumber}
                             onChange={e => setEmployeeNumber(e.target.value)}
                         />
                         <TextField 
                             className="my-card__input"
                             placeholder="Employee SigDate..."
+                            label="Employee SigDate: YYYY-MM-DDTHH:MM:SS.zzzZ"
                             value={employeeSigDate}
                             onChange={e => setEmployeeSigDate(e.target.value)}
                         />
                         <TextField
                             className="my-card__input"
                             placeholder="Employee Signature Name..."
+                            label="Employee Signature Name"
                             value={employeeSignatureName}
                             onChange={e => setEmployeeSignatureName(e.target.value)}
                         />

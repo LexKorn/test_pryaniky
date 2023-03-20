@@ -1,5 +1,3 @@
-// import { IData } from "../types/types";
-
 const baseHeaders = {
     'Content-Type': 'application/json',
     'x-auth': `${localStorage.getItem('token')}`

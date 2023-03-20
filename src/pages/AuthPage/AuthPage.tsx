@@ -17,6 +17,10 @@ const AuthPage: React.FC = () => {
     const [password, setPassword] = useState<string>('');
 
     const click = async () => {
+        if (username.substring(0, 4) !== 'user') {
+            return alert('username должен быть в формате "user{N}", где N - число')
+        }
+
         await login(username, password)
             .then(data => {
                 if (data.data) {
@@ -24,10 +28,16 @@ const AuthPage: React.FC = () => {
                     auth.setIsAuth(true);
                     navigate(MAIN_ROUTE);
                 } else {
-                    alert(data.error_text);
+                    alert(`В доступе отказано: ${data.error_text}`);
                 }
             }) 
     };
+
+    window.addEventListener('keydown', (e) => {
+        if (e.keyCode === 13) {
+            click();
+        }
+    }, {once: true});
 
     return (
         <Container maxWidth="sm">
@@ -42,13 +52,15 @@ const AuthPage: React.FC = () => {
                     <div className="my-card__form">
                         <TextField 
                             className="my-card__input"
-                            placeholder="Введите ваш email..."
+                            placeholder="Введите ваш username..."
+                            label="username"
                             value={username}
                             onChange={e => setUsername(e.target.value)}
                         />
                         <TextField
                             className="my-card__input"
                             placeholder="Введите ваш пароль..."
+                            label="password"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                             type='password'

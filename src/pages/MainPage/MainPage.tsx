@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Container, Button } from '@mui/material';
+import { Container, Button, CircularProgress } from '@mui/material';
 import {Helmet} from "react-helmet";
 import {observer} from 'mobx-react-lite'
 
 import {Context} from '../../index';
 import {getData} from '../../http/dataAPI';
 import { IData } from '../../types/types';
-import BasicTable from '../../components/BasicTable';
+import BasicTable from '../../components/BasicTable/BasicTable';
 import ModalAddData from '../../components/Modals/ModalAddData';
 
 import './mainPage.sass';
@@ -16,9 +16,13 @@ const MainPage: React.FC = observer(() => {
     const {auth, notes} = useContext(Context);
     const [elems, setElems] = useState<IData[]>([]);
     const [visible, setVisible] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        getData().then(data => setElems(data.data));
+        getData().then(data => {
+            setElems(data.data);
+            setLoading(false);
+        });
     }, [visible, notes.toggle]);
 
     const handleExit = () => {
@@ -34,7 +38,7 @@ const MainPage: React.FC = observer(() => {
             </Helmet>
 
             <h2 className="main-page__title">Главная страница</h2>
-            <BasicTable rows={elems} />
+            {loading ? <CircularProgress /> : <BasicTable rows={elems} />}
             <Button 
                 onClick={() => setVisible(true)}
                 variant="contained"

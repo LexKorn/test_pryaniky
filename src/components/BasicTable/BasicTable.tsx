@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -9,10 +9,12 @@ import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import { IData } from '../types/types';
-import { deleteData } from '../http/dataAPI';
-import {Context} from '../index';
-import ModalUpdateData from './Modals/ModalUpdateData';
+import { IData } from '../../types/types';
+import { deleteData } from '../../http/dataAPI';
+import {Context} from '../../index';
+import ModalUpdateData from '../Modals/ModalUpdateData';
+
+import './basicTable.sass';
 
 interface BasicTableProps {
   rows: IData[];
@@ -23,20 +25,14 @@ const BasicTable: React.FC<BasicTableProps> = ({rows}) => {
   const [note, setNote] = useState<IData>({} as IData);
   const [visible, setVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (note.id) {
-      setVisible(true);
-    }
-  }, [note]);
-
   const removeData = (item: IData) => {
     deleteData(item.id).then(() => notes.setToggle(notes.toggle));
   };
 
-  // const editData = (item: IData) => {
-  //   setNote(item);
-    // setVisible(true);
-  // };
+  const editData = (item: IData) => {
+    setNote(item);
+    setVisible(true);
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -57,12 +53,11 @@ const BasicTable: React.FC<BasicTableProps> = ({rows}) => {
         <TableBody>
           {rows.map((row) => (
             <TableRow
-              key={row.companySigDate}
+              key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
                 {row.companySigDate}
-                {/* {row.companySigDate.toISOString()} */}
               </TableCell>
               <TableCell align="right">{row.companySignatureName}</TableCell>
               <TableCell align="right">{row.documentName}</TableCell>
@@ -70,15 +65,14 @@ const BasicTable: React.FC<BasicTableProps> = ({rows}) => {
               <TableCell align="right">{row.documentType}</TableCell>
               <TableCell align="right">{row.employeeNumber}</TableCell>
               <TableCell align="right">{row.employeeSigDate}</TableCell>
-              {/* <TableCell align="right">{(new Date(row.employeeSigDate)).toISOString()}</TableCell> */}
               <TableCell align="right">{row.employeeSignatureName}</TableCell>
               <TableCell align="right">
                 <EditIcon 
-                  style={{color: 'blue', cursor: 'pointer'}} 
-                  onClick={() => setNote(row)}
+                  className='icon icon__edit'
+                  onClick={() => editData(row)}
                 />
                 <DeleteForeverIcon 
-                  style={{color: 'red', cursor: 'pointer'}}
+                  className='icon icon__delete'
                   onClick={() => removeData(row)}
                 />
               </TableCell>
